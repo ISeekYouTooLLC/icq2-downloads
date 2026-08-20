@@ -1,0 +1,47 @@
+name: Publish mirrored release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@v4
+
+      - name: Download and verify official release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          base="https://icq2.net/releases/windows-x64"
+          mkdir -p release-assets
+          cd release-assets
+          curl --fail --location --retry 3 --output "ICQ2-${version}-x64-Setup.exe" "${base}/ICQ2-${version}-x64-Setup.exe"
+          curl --fail --location --retry 3 --output "icq2-${version}-windows-x64-portable.zip" "${base}/icq2-${version}-windows-x64-portable.zip"
+          curl --fail --location --retry 3 --output "ICQ2-${version}-SHA256SUMS.txt" "${base}/ICQ2-${version}-SHA256SUMS.txt"
+          curl --fail --location --retry 3 --output "icq2-${version}-sbom.cdx.json" "${base}/icq2-${version}-sbom.cdx.json"
+          sha256sum --check "ICQ2-${version}-SHA256SUMS.txt"
+
+      - name: Publish GitHub mirror release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          cat > release-notes.md <<EOF
+          ICQ2 ${version} for Windows x64 (open alpha), published by I Seek You Too LLC.
+
+          These files are a byte-for-byte mirror of the official downloads at https://icq2.net/releases/${version}. Verify the valid Windows signature from \`I Seek You Too LLC\` and compare SHA-256 values with \`ICQ2-${version}-SHA256SUMS.txt\`. Do not disable SmartScreen, antivirus, or organization security policy.
+          EOF
+          gh release create "$GITHUB_REF_NAME" \
+            --title "ICQ2 ${version} Windows open alpha" \
+            --notes-file release-notes.md \
+            release-assets/*
