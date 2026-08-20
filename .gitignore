@@ -1,0 +1,9 @@
+/release-assets/
+*.exe
+*.msi
+*.msix
+*.zip
+*.pfx
+*.p12
+*.key
+*.pem
