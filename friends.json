@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "channel": "friends",
+  "version": "0.2.01a",
+  "published_utc": "2026-08-20T01:48:35.3958286Z",
+  "installer_url": "https://icq2.net/releases/windows-x64/ICQ2-0.2.01a-x64-Setup.exe",
+  "installer_mirror_url": "https://github.com/ISeekYouTooLLC/icq2-downloads/releases/download/v0.2.01a/ICQ2-0.2.01a-x64-Setup.exe",
+  "size_bytes": 657496,
+  "sha256": "D3976044507E84AA530B463B0CF0AE6C7F9706B593133E7464B7C39E27495435",
+  "release_notes_url": "https://icq2.net/releases/0.2.01a"
+}
